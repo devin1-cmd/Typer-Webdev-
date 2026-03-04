@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Typer Webdev Easy - Easy Mode</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+body {
+  background: linear-gradient(135deg, #74ebd5, #ACB6E5);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.game-card {
+  border-radius: 25px;
+}
+
+.word {
+  font-size: clamp(30px, 6vw, 60px);
+  font-weight: bold;
+}
+
+.level-badge {
+  font-size: 18px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6">
+      <div class="card shadow-lg p-4 text-center game-card">
+
+        <h2 class="mb-2">Typer Webdev</h2>
+        <span class="badge bg-success level-badge mb-3">Easy Level</span>
+
+        <div id="word" class="word mb-3"></div>
+
+        <input type="text" id="input" class="form-control form-control-lg text-center mb-3" disabled>
+
+        <div class="progress mb-3" style="height:25px;">
+          <div id="progressBar" class="progress-bar bg-success" style="width:100%">15</div>
+        </div>
+
+        <div class="d-flex justify-content-between mb-3">
+          <div id="timer" class="fw-bold">Time: 15</div>
+          <div id="score" class="fw-bold">Score: 0</div>
+        </div>
+
+        <button id="startBtn" onclick="startGame()" class="btn btn-success btn-lg w-100">
+          Start Easy Game
+        </button>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+var words = ["html","css","javascript","php","mysql","assembly","laravel","java","c++","c#","c","python","html5","tailwind","boost","list"];
+var currentWord = "";
+var timer;
+var maxTime = 15;
+var timeLeft = 15;
+var score = 0;
+var gameActive = false;
+
+function pickRandomWord() {
+  clearInterval(timer);
+  var randomIndex = Math.floor(Math.random() * words.length);
+  currentWord = words[randomIndex];
+  document.getElementById("word").textContent = currentWord;
+  timeLeft = maxTime;
+  updateTimerUI();
+  timer = setInterval(countdown, 1000);
+}
+
+function countdown() {
+  timeLeft--;
+  updateTimerUI();
+  if (timeLeft <= 0) {
+    endGame();
+  }
+}
+
+function updateTimerUI() {
+  document.getElementById("timer").textContent = "Time: " + timeLeft;
+  var percent = (timeLeft / maxTime) * 100;
+  document.getElementById("progressBar").style.width = percent + "%";
+  document.getElementById("progressBar").textContent = timeLeft;
+}
+
+function startGame() {
+  score = 0;
+  gameActive = true;
+  document.getElementById("score").textContent = "Score: 0";
+  document.getElementById("input").disabled = false;
+  document.getElementById("input").value = "";
+  document.getElementById("input").focus();
+  document.getElementById("startBtn").textContent = "Restart Easy Game";
+  pickRandomWord();
+}
+
+function endGame() {
+  clearInterval(timer);
+  gameActive = false;
+  alert("Time's up! Final Score: " + score);
+  score = 0;
+  document.getElementById("score").textContent = "Score: 0";
+  document.getElementById("word").textContent = "";
+  document.getElementById("input").value = "";
+  document.getElementById("input").disabled = true;
+  timeLeft = maxTime;
+  updateTimerUI();
+}
+
+document.getElementById("input").addEventListener("input", function(event) {
+  if (!gameActive) return;
+  if (event.target.value.toLowerCase() === currentWord.toLowerCase()) {
+    event.target.value = "";
+    score++;
+    document.getElementById("score").textContent = "Score: " + score;
+    pickRandomWord();
+  }
+});
+</script>
+
+</body>
+</html>
